@@ -1,0 +1,23 @@
+{
+  "name": "customer-management",
+  "version": "1.0.0",
+  "description": "## Summary",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alecthibodeau/customer-management.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alecthibodeau/customer-management/issues"
+  },
+  "homepage": "https://github.com/alecthibodeau/customer-management#readme",
+  "dependencies": {
+    "csvtojson": "^2.0.10"
+  }
+}
