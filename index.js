@@ -1,13 +1,18 @@
-// Import CSV file from command line: node index.js <file_name.csv>
+/*
+  Import CSV file from command line with multiple arguments:
+    $node index.js <file_name.csv> 'LC22'
+  Dates in CSV should be formatted as two-character sections: MM/DD/YY
+*/
 const csvFile = process.argv[2];
+const currentItem = process.argv[3];
 
-// Modules
+/*
+  Modules
+*/
 const csv = require('csvtojson');
 const fs = require('fs');
 const path = require('path');
 
-const currentItem = 'LC22';
-const currentYear = 2021;
 let orderBlockDate = '';
 let dailyOrderPosition = 0;
 let namesOfDirectories = [];
@@ -21,6 +26,9 @@ const leadingZeroAddition = (number) => {
 
 const makeDirectoryNameText = (json) => {
   json.forEach(record => {
+    const orderYear = `20${record['Date'].slice(-2)}`;
+    const orderMonthAndDay = record['Date'].replace('/', '').substring(0,4);
+    const datePrefix = `${orderMonthAndDay}-${orderYear}-`;
     let quantity = 1;
     let quantityNotation = '';
     let other = '';
@@ -31,11 +39,6 @@ const makeDirectoryNameText = (json) => {
     if (record['Other Items']) {
       other = `+${record['Other Items']}`;
     }
-    const datePrefix = record['Date']
-      .replace('/', '')
-      .replace(`/${currentYear.toString()
-      .substring(2,4)}`, '')+`-${currentYear}-`;
-    const orderMonthAndDay = datePrefix.substring(0,4);
     if (orderMonthAndDay !== orderBlockDate) {
       dailyOrderPosition = 0;
       orderBlockDate = orderMonthAndDay;
@@ -62,7 +65,9 @@ const generateDirectories = () => {
   };
 }
 
-// Invoking csv returns a promise
+/*
+  Invoking csv returns a promise
+*/
 csv()
   .fromFile(`./${csvFile}`)
   .then((json) => { makeDirectoryNameText(json) })
