@@ -22,7 +22,7 @@ const leadingZeroAddition = (number) => {
     number = '0' + number;
   }
   return number;
-}
+};
 
 const makeDirectoryNameText = (json) => {
   json.forEach(record => {
@@ -61,9 +61,9 @@ const generateDirectories = () => {
         return console.error(err);
       }
       console.log(`'${namesOfDirectories[i]}' directory successfully created.`);
-    });
-  };
-}
+    })
+  }
+};
 
 /*
   Invoking csv returns a promise
