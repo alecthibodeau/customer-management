@@ -1,14 +1,16 @@
-/*
-  Import CSV file from command line with multiple arguments:
-    $node index.js <file_name.csv> 'LC22'
-  Dates in CSV should be formatted as two-character sections: MM/DD/YY
-*/
+/**
+ * Import CSV file from command line with multiple arguments:
+ * $node index.js <file_name.csv> 'LC22'
+ * Dates in CSV should be formatted as two-character sections: MM/DD/YY
+ */
+
 const csvFile = process.argv[2];
 const currentItem = process.argv[3];
 
-/*
-  Modules
-*/
+/**
+ * Modules
+ */
+
 const csv = require('csvtojson');
 const fs = require('fs');
 const path = require('path');
@@ -16,6 +18,8 @@ const path = require('path');
 let orderBlockDate = '';
 let dailyOrderPosition = 0;
 let namesOfDirectories = [];
+
+const csvFilePath = `./${csvFile}`;
 
 const leadingZeroAddition = (number) => {
   for (let i = 0; i < 4 - number.toString().length; i++) {
@@ -65,10 +69,17 @@ const generateDirectories = () => {
   }
 };
 
-/*
-  Invoking csv returns a promise
-*/
-csv()
-  .fromFile(`./${csvFile}`)
-  .then((json) => { makeDirectoryNameText(json) })
-  .then(() => { generateDirectories() });
+/**
+ * Invoking csv returns a Promise
+ */
+
+const getCsvData = (path) => {
+  csv()
+    .fromFile(path)
+    .then((json) => { makeDirectoryNameText(json) })
+    .then(() => { generateDirectories() })
+    .catch(() => console.error(`Something went wrong. Check if '${path}' is the correct file path.`));
+}
+
+getCsvData(csvFilePath);
+
