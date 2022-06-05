@@ -73,12 +73,12 @@ const generateDirectories = () => {
  * Invoking csv returns a Promise
  */
 
-const getCsvData = (path) => {
+const getCsvData = (filePath) => {
   csv()
-    .fromFile(path)
+    .fromFile(filePath)
     .then((json) => { makeDirectoryNameText(json) })
     .then(() => { generateDirectories() })
-    .catch(() => console.error(`Something went wrong. Check if '${path}' is the correct file path.`));
+    .catch(() => console.error(`Something went wrong. Check if '${filePath}' is the correct file path.`));
 }
 
 getCsvData(csvFilePath);
