@@ -81,7 +81,7 @@ const getCsvData = (filePath) => {
     .fromFile(filePath)
     .then((json) => { makeDirectoryNameText(json) })
     .then(() => { generateDirectories() })
-    .catch(() => console.error(`Something went wrong. Check if '${filePath}' is the correct file path.`));
+    .catch((error) => console.error(error));
 }
 
 getCsvData(csvFilePath);
