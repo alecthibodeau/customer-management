@@ -1,25 +1,28 @@
 /**
- * Import CSV file from command line with multiple arguments:
- * $node index.js <file_name.csv> 'LC22'
- * Dates in CSV should be formatted as two-character sections: MM/DD/YY
+ * Load the CSV file from the command line with three arguments after node:
+ * 1) JS file
+ * 2) CSV file
+ * 3) current item (in quotes)
+ * $node index.js <file_name.csv> 'LC23'
+ * Dates in CSV can be formatted as two-character or four-character sections: MM/DD/YY or MM/DD/YYYY
  */
-
-const csvFile = process.argv[2];
-const currentItem = process.argv[3];
 
 /**
- * Modules
+ * Modules to import
  */
+import csv from 'csvtojson';
+import { fileURLToPath } from 'url';
+import { mkdir } from 'fs';
+import path, { join } from 'path';
 
-const csv = require('csvtojson');
-const fs = require('fs');
-const path = require('path');
+const fileNamePath = fileURLToPath(import.meta.url); // The path to the current file: i.e. index.js
+const parentDirectoryPath = path.dirname(fileNamePath); // The path to the parent directory for the current file
+const csvFilePath = `./${process.argv[2]}`;
+const currentItem = process.argv[3];
 
 let orderBlockDate = '';
 let dailyOrderPosition = 0;
 let namesOfDirectories = [];
-
-const csvFilePath = `./${csvFile}`;
 
 const leadingZeroAddition = (number) => {
   for (let i = 0; i < 4 - number.toString().length; i++) {
@@ -57,7 +60,7 @@ const makeDirectoryNameText = (json) => {
 
 const generateDirectories = () => {
   for (let i = 0; i < namesOfDirectories.length; i++) {
-    fs.mkdir(path.join(__dirname, namesOfDirectories[i]), (err) => {
+    mkdir(join(parentDirectoryPath, namesOfDirectories[i]), (err) => {
       if (err) {
         if (err.errno === -17 && err.code === 'EEXIST') {
           return console.error(`'${namesOfDirectories[i]}' directory already exists.`);
@@ -82,4 +85,3 @@ const getCsvData = (filePath) => {
 }
 
 getCsvData(csvFilePath);
-
