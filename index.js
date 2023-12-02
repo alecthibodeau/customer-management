@@ -7,9 +7,7 @@
  * Dates in CSV can be formatted as two-character or four-character sections: MM/DD/YY or MM/DD/YYYY
  */
 
-/**
- * Modules to import
- */
+/* Modules to import */
 import csv from 'csvtojson';
 import { fileURLToPath } from 'url';
 import { mkdir } from 'fs';
@@ -24,11 +22,12 @@ let orderBlockDate = '';
 let dailyOrderPosition = 0;
 let namesOfDirectories = [];
 
-const leadingZeroAddition = (number) => {
-  for (let i = 0; i < 4 - number.toString().length; i++) {
-    number = '0' + number;
+const addLeadingZeroCharacters = (positionNumber) => {
+  let indexCharacters = positionNumber.toString();
+  for (let i = 0; i < 4 - indexCharacters.length; i++) {
+    indexCharacters = '0' + indexCharacters;
   }
-  return number;
+  return indexCharacters;
 }
 
 const makeDirectoryNameText = (json) => {
@@ -38,22 +37,22 @@ const makeDirectoryNameText = (json) => {
     const datePrefix = `${orderMonthAndDay}-${orderYear}-`;
     let quantity = 1;
     let quantityNotation = '';
-    let other = '';
+    let otherItems = '';
     if (record.Quantity > 1) {
       quantity = record.Quantity;
       quantityNotation = `x${quantity}`;
     }
     if (record['Other Items']) {
-      other = `+${record['Other Items']}`;
+      otherItems = `+${record['Other Items']}`;
     }
     if (orderMonthAndDay !== orderBlockDate) {
       dailyOrderPosition = 0;
       orderBlockDate = orderMonthAndDay;
     }
     dailyOrderPosition++;
-    const dailyOrderIndex = leadingZeroAddition(dailyOrderPosition);
+    const dailyOrderIndex = addLeadingZeroCharacters(dailyOrderPosition);
     const basicOrderInfo = `${datePrefix}${dailyOrderIndex}${currentItem}${quantityNotation}`;
-    const directoryNameText = `${basicOrderInfo}${other} ${record.Customer}`;
+    const directoryNameText = `${basicOrderInfo}${otherItems} ${record.Customer}`;
     namesOfDirectories.push(directoryNameText);
   })
 }
@@ -75,10 +74,7 @@ const generateDirectories = () => {
   }
 }
 
-/**
- * Invoking csv returns a Promise
- */
-
+/* Invoking csv returns a Promise */
 const getCsvData = (filePath) => {
   csv()
     .fromFile(filePath)
