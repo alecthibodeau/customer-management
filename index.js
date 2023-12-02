@@ -1,9 +1,9 @@
 /**
  * Load the CSV file from the command line with three arguments after node:
  * 1) JS file
- * 2) CSV file
+ * 2) CSV file [see LibreOffice notes about prepping this]
  * 3) current item (in quotes)
- * $node index.js <file_name.csv> 'LC23'
+ * $node index.js <file_name.csv> 'LC24'
  * Dates in CSV can be formatted as two-character or four-character sections: MM/DD/YY or MM/DD/YYYY
  */
 
@@ -29,18 +29,18 @@ const leadingZeroAddition = (number) => {
     number = '0' + number;
   }
   return number;
-};
+}
 
 const makeDirectoryNameText = (json) => {
   json.forEach(record => {
-    const orderYear = `20${record['Date'].slice(-2)}`;
-    const orderMonthAndDay = record['Date'].replace('/', '').substring(0,4);
+    const orderYear = `20${record.Date.slice(-2)}`;
+    const orderMonthAndDay = record.Date.replace('/', '').substring(0,4);
     const datePrefix = `${orderMonthAndDay}-${orderYear}-`;
     let quantity = 1;
     let quantityNotation = '';
     let other = '';
-    if (record['Quantity'] > 1) {
-      quantity = record['Quantity'];
+    if (record.Quantity > 1) {
+      quantity = record.Quantity;
       quantityNotation = `x${quantity}`;
     }
     if (record['Other Items']) {
@@ -56,21 +56,24 @@ const makeDirectoryNameText = (json) => {
     const directoryNameText = `${basicOrderInfo}${other} ${record.Customer}`;
     namesOfDirectories.push(directoryNameText);
   })
-};
+}
 
 const generateDirectories = () => {
   for (let i = 0; i < namesOfDirectories.length; i++) {
-    mkdir(join(parentDirectoryPath, namesOfDirectories[i]), (err) => {
+    const currentDirectoryName = namesOfDirectories[i];
+    const fileExistsErrorNumber = -17;
+    const fileExistsErrorCode = 'EEXIST';
+    mkdir(join(parentDirectoryPath, currentDirectoryName), (err) => {
       if (err) {
-        if (err.errno === -17 && err.code === 'EEXIST') {
-          return console.error(`'${namesOfDirectories[i]}' directory already exists.`);
+        if (err.errno === fileExistsErrorNumber && err.code === fileExistsErrorCode) {
+          return console.error(`'${currentDirectoryName}' directory already exists.`);
         }
         return console.error(err);
       }
-      console.log(`'${namesOfDirectories[i]}' directory successfully created.`);
+      console.log(`'${currentDirectoryName}' directory successfully created.`);
     })
   }
-};
+}
 
 /**
  * Invoking csv returns a Promise
